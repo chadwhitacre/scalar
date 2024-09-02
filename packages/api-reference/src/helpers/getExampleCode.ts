@@ -1,3 +1,4 @@
+import { createRequest } from '@/helpers/createRequest'
 import {
   type Request,
   type ClientId as SnippetzClientId,
@@ -21,6 +22,8 @@ export async function getExampleCode(
   target: TargetId | string,
   client: ClientId | string,
 ) {
+  const request = createRequest(partialRequest)
+
   // @scalar/snippetz
   const snippetzTargetKey = target.replace('javascript', 'js')
 

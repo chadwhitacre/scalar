@@ -1,15 +1,14 @@
 import { describe, expect, it } from 'vitest'
 
-import { createRequest } from './createRequest'
 import { getExampleCode } from './getExampleCode'
 
 describe('getExampleCode', () => {
   it('generates a basic curl example (httpsnippet-lite)', async () => {
     const result = await getExampleCode(
-      createRequest({
+      {
         method: 'POST',
         url: 'https://example.com',
-      }),
+      },
       'shell',
       'curl',
     )
@@ -21,10 +20,10 @@ describe('getExampleCode', () => {
 
   it('generates a basic undici example (@scalar/snippetz)', async () => {
     const result = await getExampleCode(
-      createRequest({
+      {
         method: 'POST',
         url: 'https://example.com',
-      }),
+      },
       'node',
       'undici',
     )
@@ -36,13 +35,11 @@ describe('getExampleCode', () => {
 
   it('returns an empty string if passed rubbish', async () => {
     const result = await getExampleCode(
-      createRequest({
+      {
         method: 'POST',
         url: 'https://example.com',
-      }),
-      // @ts-ignore
+      },
       'fantasy',
-      // @ts-ignore
       'blue',
     )
 
