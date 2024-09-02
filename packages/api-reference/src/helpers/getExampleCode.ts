@@ -7,6 +7,7 @@ import {
 } from '@scalar/snippetz'
 import {
   HTTPSnippet,
+  type HarRequest,
   type ClientId as HttpSnippetLiteClientId,
   type TargetId as HttpSnippetLiteTargetId,
 } from 'httpsnippet-lite'
@@ -18,30 +19,32 @@ export type ClientId = HttpSnippetLiteClientId | SnippetzClientId
  * Returns a code example for given HAR request
  */
 export async function getExampleCode(
-  partialRequest: Partial<Request>,
+  partialRequest: Partial<HarRequest>,
   target: TargetId | string,
   client: ClientId | string,
-) {
-  const request = createRequest(partialRequest)
+): Promise<string> {
+  const request = createRequest(partialRequest as Request)
 
   // @scalar/snippetz
   const snippetzTargetKey = target.replace('javascript', 'js')
 
   if (snippetz().hasPlugin(snippetzTargetKey, client)) {
-    return snippetz().print(
-      target as SnippetzTargetId,
-      client as SnippetzClientId,
-      request,
+    return (
+      snippetz().print(
+        target as SnippetzTargetId,
+        client as SnippetzClientId,
+        request,
+      ) ?? ''
     )
   }
 
   // httpsnippet-lite
   try {
     return (
-      (await new HTTPSnippet(request).convert(
+      ((await new HTTPSnippet(request).convert(
         target as HttpSnippetLiteTargetId,
         client as HttpSnippetLiteClientId,
-      )) ?? ''
+      )) as string) ?? ''
     )
   } catch (error) {
     console.error(

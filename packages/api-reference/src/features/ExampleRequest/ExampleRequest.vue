@@ -9,14 +9,12 @@ import {
 import { ScalarCodeBlock } from '@scalar/components'
 import { createHash, ssrState } from '@scalar/oas-utils/helpers'
 import { getRequestFromOperation } from '@scalar/oas-utils/spec-getters'
-import { type TargetId, snippetz } from '@scalar/snippetz'
 import type {
   ExampleRequestSSRKey,
   SSRState,
   TransformedOperation,
 } from '@scalar/types/legacy'
 import { asyncComputed } from '@vueuse/core'
-import { HTTPSnippet } from 'httpsnippet-lite'
 import {
   computed,
   inject,
@@ -36,6 +34,7 @@ import { HttpMethod } from '../../components/HttpMethod'
 import {
   GLOBAL_SECURITY_SYMBOL,
   getApiClientRequest,
+  getExampleCode,
   mergeRequests,
 } from '../../helpers'
 import { type HttpClientState, useHttpClientStore } from '../../stores'
@@ -124,7 +123,7 @@ const hasMultipleExamples = computed<boolean>(
 
 const getGlobalSecurity = inject(GLOBAL_SECURITY_SYMBOL)
 
-async function generateSnippet() {
+async function getExampleRequest() {
   // Use the selected custom example
   if (localHttpClient.value.targetKey === 'customExamples') {
     return (
@@ -150,48 +149,25 @@ async function generateSnippet() {
     ),
   )
 
-  const clientKey =
-    httpClient.clientKey === 'undici' ||
-    httpClient.clientKey === 'fetch' ||
-    httpClient.clientKey === 'ofetch'
-      ? httpClient.clientKey
-      : null
-
-  const targetKey = httpClient.targetKey.replace('javascript', 'js')
-
-  if (clientKey && snippetz().hasPlugin(targetKey, clientKey)) {
-    return (
-      snippetz().print(targetKey as TargetId, clientKey, request as any) ?? ''
-    )
-  }
-
-  // Use httpsnippet-lite for other languages
-  try {
-    const snippet = new HTTPSnippet(request)
-    const result = await snippet.convert(
-      httpClient.targetKey,
-      httpClient.clientKey,
-    )
-
-    return decodeURIComponent(result as string)
-  } catch (e) {
-    console.error('[ExampleRequest]', e)
-    return ''
-  }
+  return await getExampleCode(
+    request,
+    httpClient.targetKey,
+    httpClient.clientKey,
+  )
 }
 
 const generatedCode = asyncComputed<string>(async () => {
   try {
-    return await generateSnippet()
+    return await getExampleRequest()
   } catch (error) {
-    console.error('[generateSnippet]', error)
+    console.error('[getExampleRequest]', error)
     return ''
   }
 }, ssrState[ssrStateKey] ?? '')
 
 onServerPrefetch(async () => {
   const ctx = useSSRContext<SSRState>()
-  ctx!.payload.data[ssrStateKey] = await generateSnippet()
+  ctx!.payload.data[ssrStateKey] = await getExampleRequest()
 })
 
 /** @hans TODO What is this doing? Computed properties should not be used as side effects  */
