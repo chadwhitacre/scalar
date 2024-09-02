@@ -4,8 +4,15 @@ import { useWorkspace } from '@/store/workspace'
 import { ScalarButton, ScalarIcon, ScalarListbox } from '@scalar/components'
 import type { RequestMethod } from '@scalar/oas-utils/helpers'
 import { useToasts } from '@scalar/use-toasts'
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+const props = defineProps<{
+  metaData?: {
+    itemUid: string
+    parentUid: string
+  }
+}>()
 
 const emits = defineEmits<{
   (event: 'close'): void
@@ -25,7 +32,9 @@ const {
 
 const requestName = ref('')
 const requestMethod = ref('GET')
-const selectedCollectionId = ref(activeCollection.value?.uid ?? '')
+const selectedCollectionId = ref(
+  props.metaData?.parentUid ?? activeCollection.value?.uid ?? '',
+)
 
 const collections = computed(() =>
   activeWorkspaceCollections.value.map((collection) => ({
@@ -62,9 +71,11 @@ const folders = computed(() =>
   ),
 )
 const selectedFolderId = ref(
-  Object.values(_folders).find((folder) =>
-    folder.childUids.includes(activeRequest.value?.uid),
-  )?.uid ?? '',
+  props.metaData
+    ? props.metaData.itemUid
+    : Object.values(_folders).find((folder) =>
+        folder.childUids.includes(activeRequest.value?.uid),
+      )?.uid ?? '',
 )
 
 const selectedFolder = computed({
@@ -103,7 +114,7 @@ const handleSubmit = () => {
 }
 
 const requestInput = ref<HTMLInputElement | null>(null)
-onMounted(() => {
+nextTick(() => {
   requestInput.value?.focus()
 })
 </script>

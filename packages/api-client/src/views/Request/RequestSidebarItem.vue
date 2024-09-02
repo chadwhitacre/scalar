@@ -3,6 +3,7 @@ import { HttpMethod } from '@/components/HttpMethod'
 import DeleteSidebarListElement from '@/components/Sidebar/Actions/DeleteSidebarListElement.vue'
 import { useSidebar } from '@/hooks'
 import { getModifiers } from '@/libs'
+import { commandPaletteBus } from '@/libs/event-busses'
 import { PathId } from '@/router'
 import { useWorkspace } from '@/store/workspace'
 import {
@@ -269,6 +270,16 @@ const handleNavigation = (event: KeyboardEvent, item: typeof props.item) => {
     }
   }
 }
+
+function openCommandPaletteRequest() {
+  commandPaletteBus.emit({
+    commandName: 'Create Request',
+    metaData: {
+      itemUid: props.item.uid,
+      parentUid: props.parentUids[props.parentUids.length - 1],
+    },
+  })
+}
 </script>
 <template>
   <div
@@ -429,6 +440,18 @@ const handleNavigation = (event: KeyboardEvent, item: typeof props.item) => {
           :parentUids="[...parentUids, item.uid]"
           @newTab="(name, uid) => $emit('newTab', name, uid)"
           @onDragEnd="(...args) => $emit('onDragEnd', ...args)" />
+        <ScalarButton
+          v-if="item.childUids.length === 0"
+          class="mb-[.5px] flex gap-1.5 h-8 text-c-1 py-0 justify-start text-xs w-full hover:bg-b-2"
+          :class="parentUids.length ? 'pl-9' : ''"
+          variant="ghost"
+          @click="openCommandPaletteRequest()">
+          <ScalarIcon
+            class="ml-0.5 h-2.5 w-2.5"
+            icon="Add"
+            thickness="3" />
+          <span>Add Request</span>
+        </ScalarButton>
       </div>
     </Draggable>
   </div>
