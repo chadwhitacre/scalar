@@ -17,9 +17,9 @@ export type ClientId = HttpSnippetLiteClientId | SnippetzClientId
  * Returns a code example for given HAR request
  */
 export async function getExampleCode(
-  request: Request,
-  target: TargetId,
-  client: ClientId,
+  partialRequest: Partial<Request>,
+  target: TargetId | string,
+  client: ClientId | string,
 ) {
   // @scalar/snippetz
   const snippetzTargetKey = target.replace('javascript', 'js')
