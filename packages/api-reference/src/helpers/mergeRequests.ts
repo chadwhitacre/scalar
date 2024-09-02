@@ -7,7 +7,10 @@ import type {
 } from '@scalar/types/legacy'
 import type { HarRequest } from 'httpsnippet-lite'
 
-export const getHarRequest = (
+/**
+ * Merge multiple HAR requests into one.
+ */
+export const mergeRequests = (
   ...requests: Partial<HarRequestWithPath>[]
 ): HarRequest => {
   let mergedRequests: HarRequestWithPath = {

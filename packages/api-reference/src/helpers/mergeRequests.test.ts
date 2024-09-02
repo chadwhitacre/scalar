@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { getHarRequest } from './getHarRequest'
+import { mergeRequests } from './mergeRequests'
 
-describe('getHarRequest', () => {
+describe('mergeRequests', () => {
   it('creates a basic HAR request', () => {
-    const request = getHarRequest({
+    const request = mergeRequests({
       url: 'https://example.com',
       path: '/foobar',
     })
@@ -15,7 +15,7 @@ describe('getHarRequest', () => {
   })
 
   it('merges two HAR requests', () => {
-    const request = getHarRequest(
+    const request = mergeRequests(
       {
         url: 'https://example.com',
       },
@@ -30,7 +30,7 @@ describe('getHarRequest', () => {
   })
 
   it('merges headers', () => {
-    const request = getHarRequest(
+    const request = mergeRequests(
       {
         url: 'https://example.com',
         headers: [
@@ -66,7 +66,7 @@ describe('getHarRequest', () => {
   })
 
   it('merges query strings', () => {
-    const request = getHarRequest(
+    const request = mergeRequests(
       {
         url: 'https://example.com',
         queryString: [
@@ -102,7 +102,7 @@ describe('getHarRequest', () => {
   })
 
   it('merges cookies', () => {
-    const request = getHarRequest(
+    const request = mergeRequests(
       {
         url: 'https://example.com',
         cookies: [
@@ -138,7 +138,7 @@ describe('getHarRequest', () => {
   })
 
   it('removes duplicate headers', () => {
-    const request = getHarRequest(
+    const request = mergeRequests(
       {
         url: 'https://example.com',
         headers: [
@@ -170,7 +170,7 @@ describe('getHarRequest', () => {
   })
 
   it('formats headers', () => {
-    const request = getHarRequest({
+    const request = mergeRequests({
       url: 'https://example.com',
       headers: [
         {

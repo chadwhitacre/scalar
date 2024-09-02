@@ -14,7 +14,7 @@ import type {
   TransformedOperation,
 } from '@scalar/types/legacy'
 
-import { getHarRequest } from '../helpers'
+import { mergeRequests } from '../helpers'
 
 /**
  * Generate parameters for the request
@@ -30,7 +30,7 @@ export function getApiClientRequest({
   authenticationState?: AuthenticationState | null
   globalSecurity?: OpenAPIV3.SecurityRequirementObject[] | null
 }): ClientRequestConfig {
-  const request = getHarRequest(
+  const request = mergeRequests(
     {
       url: getUrlFromServerState(serverState),
     },

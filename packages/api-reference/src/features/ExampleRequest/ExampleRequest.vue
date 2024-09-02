@@ -36,7 +36,7 @@ import { HttpMethod } from '../../components/HttpMethod'
 import {
   GLOBAL_SECURITY_SYMBOL,
   getApiClientRequest,
-  getHarRequest,
+  mergeRequests,
 } from '../../helpers'
 import { type HttpClientState, useHttpClientStore } from '../../stores'
 import ExamplePicker from './ExamplePicker.vue'
@@ -133,7 +133,7 @@ async function generateSnippet() {
   }
 
   // Generate a request object
-  const request = getHarRequest(
+  const request = mergeRequests(
     {
       url: getUrlFromServerState(serverState),
     },
