@@ -1,5 +1,15 @@
 # @scalar/api-reference
 
+## 1.25.10
+
+### Patch Changes
+
+- a07cfc8: feat: allow to hide the Test Request button
+- Updated dependencies [a07cfc8]
+  - @scalar/types@0.0.7
+  - @scalar/api-client@2.0.63
+  - @scalar/oas-utils@0.2.42
+
 ## 1.25.9
 
 ### Patch Changes

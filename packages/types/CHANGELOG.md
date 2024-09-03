@@ -1,5 +1,11 @@
 # @scalar/types
 
+## 0.0.7
+
+### Patch Changes
+
+- a07cfc8: feat: allow to hide the Test Request button
+
 ## 0.0.6
 
 ### Patch Changes
